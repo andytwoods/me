@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>andytwoods</title>
+    <link href="https://andytwoods.com/feed.xml" rel="self" />
+    <link href="https://andytwoods.com" />
+    <updated>1970-01-01T01:00:00+01:00</updated>
+    <author>
+        <name>andy-woods</name>
+    </author>
+    <id>https://andytwoods.com</id>
+
+    <entry>
+        <title> Python Zappa + db + external web (setting up VPC)</title>
+        <author>
+            <name>andy-woods</name>
+        </author>
+        <link href="https://andytwoods.com/python-zappa-external-web-setting-up-vpc.html"/>
+        <id>https://andytwoods.com/python-zappa-external-web-setting-up-vpc.html</id>
+
+        <updated>2020-09-01T20:14:41+01:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://andytwoods.com/media/posts/2/1_6j17ZDuywkKu7TOa2yvAKg.png" alt="" />
+                    In the previous post, we created a project using Django-CookieCutter. We deployed it to AWS Lambda with Python's Zappa, using PyCharm for sanity preservation. Here, we set up AWS to grant our app access to an AWS postgres DB, and to the external internet. Log&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://andytwoods.com/media/posts/2/1_6j17ZDuywkKu7TOa2yvAKg.png" alt="" />
+                <p>In the <a href="https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html">previous post</a>, we created a project using Django-CookieCutter. We deployed it to AWS Lambda with Python's Zappa, using PyCharm for sanity preservation.</p>
+<p>Here, we set up AWS to grant our app access to an AWS postgres DB, and to the external internet. </p>
+<p>Log in to AWS, select VPC.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/Clipboard_20180504.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/Clipboard_20180504-xs.png 300w ,https://andytwoods.com/media/posts/2/responsive/Clipboard_20180504-sm.png 480w ,https://andytwoods.com/media/posts/2/responsive/Clipboard_20180504-md.png 768w"  alt="" width="239" height="141"></p>
+<p>Let's start by making an Elastic IP. This just involves clicking 'ok' a few times. Once done, 'Start VPC Wizard'. </p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/4.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/4-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/4-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/4-md.PNG 768w"  alt="" width="636" height="596"></p>
+<p>Make sure you select VPC with public and private subnets.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/2.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/2-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/2-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/2-md.PNG 768w"  alt="" width="1075" height="416"></p>
+<p>To save you from madness, please make sure that your Public and Private subnet zones differ.<strong> It is very easy to miss this! Please dont! </strong>Make sure you select for 'Elastic IP Allocation ID' the Elastic IP you just created.</p>
+<p>Question for someone: are 251 IP addresses per subnet sufficient?</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/5.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/5-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/5-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/5-md.PNG 768w"  alt="" width="772" height="691"></p>
+<p>Wait a bit ;)</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/6.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/6-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/6-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/6-md.PNG 768w"  alt="" width="308" height="109"></p>
+<p>Let's give our app access to some features of AWS. Select Endpoints. Then 'Create Endpoint'. </p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/7.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/7-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/7-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/7-md.PNG 768w"  alt="" width="737" height="599"></p>
+<p>Select the Service ending in S3. Make sure to associate it with the private subnet. Regarding 'Policy'. I gave mine 'Full Access'.  Then 'Create Endpoint'. </p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/8.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/8-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/8-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/8-md.PNG 768w"  alt="" width="1328" height="1113"></p>
+<p>Because we used the VPC wizard, we have both an Internet Gateway and an NAT Gateway set up for us already. This saves some headache, as it is very important that these are each associated with specific subnets and we dont have to worry now about setting this up OMFG (see <a href="https://edgarroman.github.io/zappa-django-guide/aws_network_primer/">https://edgarroman.github.io/zappa-django-guide/aws_network_primer/ </a>for manual set up).</p>
+<p>Let's copy down the <strong>PRIVATE</strong> subnet IDs (that was created for you by the wizard) and add them to our Zappa_settings.json file. </p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/9.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/9-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/9-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/9-md.PNG 768w"  alt="" width="836" height="326"></p>
+<p>Let's do the same for the Security Group that was created.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/11.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/11-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/11-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/11-md.PNG 768w"  alt="" width="1044" height="596"> </p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/10.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/10-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/10-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/10-md.PNG 768w"  alt="" width="599" height="447"></p>
+<p>Finally, let's create a DB in AWS. Go back to the AWS dashboard, under Dabase select RDS. Let's launch a DB instance. Select PostgreSQL, Production.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/12.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/12-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/12-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/12-md.PNG 768w"  alt="" width="849" height="412"></p>
+<p><br>Note that  AWS autoselect a super expensive DB for you. Make sure to update 'DB instance class'. Specify your DB details such as username and password and add these to your zappa_settings.json file.<img loading="lazy" src="https://andytwoods.com/media/posts/2/13.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/13-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/13-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/13-md.PNG 768w"  alt="" width="1000" height="856"></p>
+<p>After, you are confronted with the below screen. Make sure to select the VPC you created before. </p>
+<p>Question: does the zone have to be different from the existing subnets?</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/14.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/14-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/14-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/14-md.PNG 768w"  alt="" width="784" height="666"></p>
+<p>Once created, we need to edit the DB security group, to add some inbound rules. Scroll down to 'Security groups' and click on your db security group.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/16.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/16-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/16-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/16-md.PNG 768w"  alt="" width="973" height="597"></p>
+<p>Then, we need to add an inbound rule with 'source' being the same security group you entered into your zappa_settings.json file.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/2/15.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/2/responsive/15-xs.PNG 300w ,https://andytwoods.com/media/posts/2/responsive/15-sm.PNG 480w ,https://andytwoods.com/media/posts/2/responsive/15-md.PNG 768w"  alt="" width="1295" height="822"></p>
+<p>Let's run <code>zappa update</code> and see what happens.</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+            ]]>
+        </content>
+    </entry>
+    <entry>
+        <title>#hack trick: a quick dirty way to avoid human error whilst debugging</title>
+        <author>
+            <name>andy-woods</name>
+        </author>
+        <link href="https://andytwoods.com/hack-trick.html"/>
+        <id>https://andytwoods.com/hack-trick.html</id>
+
+        <updated>2020-09-01T20:14:41+01:00</updated>
+            <summary>
+                <![CDATA[
+                    When I'm debugging, and in a rush, I can be sloppy. It's human nature! It really annoys me though when I forget to clean up my hacks after I've quashed a bug. Here's a simple trick I've started using in PyCharm, when debugging Python. I&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                <p>When I'm debugging, and in a rush, I can be sloppy. It's human nature! It really annoys me though when I forget to clean up my hacks after I've quashed a bug.</p>
+<p>Here's a simple trick I've started using in PyCharm, when debugging Python. I label my hacks with #hack which PyCharm nicely lights up in bold red for me:</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/5/hack.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/5/responsive/hack-xs.png 300w ,https://andytwoods.com/media/posts/5/responsive/hack-sm.png 480w ,https://andytwoods.com/media/posts/5/responsive/hack-md.png 768w"  alt="" width="564" height="22"></p>
+<p>What really helps though is that when I try to Commit without removing the hack, PyCharm warns me! (be it in a slightly cryptic way, via a TODO item warning). Git hooks would be a better alternative here (perhaps based on <a href="https://www.reddit.com/r/django/comments/8r1gha/how_do_you_prevent_this_human_error_before_deploy/e0p2yfl/">this</a>), but if you've a windows machine, this can be a pain!</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/5/commitAttempt.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/5/responsive/commitAttempt-xs.PNG 300w ,https://andytwoods.com/media/posts/5/responsive/commitAttempt-sm.PNG 480w ,https://andytwoods.com/media/posts/5/responsive/commitAttempt-md.PNG 768w"  alt="" width="811" height="626"></p>
+<p>Here's how to do this yourself. Select 'Configure' in the above window (making sure that 'Check TODO' is selected). Then select 'Edit Filters'.</p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/5/filters.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/5/responsive/filters-xs.png 300w ,https://andytwoods.com/media/posts/5/responsive/filters-sm.png 480w ,https://andytwoods.com/media/posts/5/responsive/filters-md.png 768w"  alt="" width="500" height="514"></p>
+<p>Create a new Filter, by selecting the + icon. I've used the settings below.</p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/5/filter.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/5/responsive/filter-xs.png 300w ,https://andytwoods.com/media/posts/5/responsive/filter-sm.png 480w ,https://andytwoods.com/media/posts/5/responsive/filter-md.png 768w"  alt="" width="253" height="471"></p>
+<p>I asked people on Reddit and a facebook Django group about how they avoid this human error (leaving in debugging efforts accidentally) and I got some stick about not knowing how to unit test properly. But does anyone honestly write unit tests to check that ALL their debugging hacks are removed after? Surely not. KISS rules in my opinion. We are all human after all.</p>
+            ]]>
+        </content>
+    </entry>
+    <entry>
+        <title>overcoming my fear of public speaking</title>
+        <author>
+            <name>andy-woods</name>
+        </author>
+        <link href="https://andytwoods.com/overcoming-my-crippling-fear-of-public-speaking.html"/>
+        <id>https://andytwoods.com/overcoming-my-crippling-fear-of-public-speaking.html</id>
+
+        <updated>2020-09-01T20:14:41+01:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://andytwoods.com/media/posts/4/Public_speech.jpg" alt="" />
+                    motivation for this blog I was chatting with a group at a conference and mentioned about my public speaking fears, the horrible effects they had on me, and how I overcame them. I was quite taken aback when a friend praised me for my openness and&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://andytwoods.com/media/posts/4/Public_speech.jpg" alt="" />
+                <h2>motivation for this blog </h2>
+<p>I was chatting with a group at a conference and mentioned about my public speaking fears, the horrible effects they had on me, and how I overcame them. I was quite taken aback when a friend praised me for my openness and suggested I blog on the topic, as it might help others. Well, here we are! I hope too that I can a tleast make the 85% <em>not</em> <em>affected</em> by this<em>, </em>think (Furmark et al, 1999).</p>
+<h2>Here we go</h2>
+<p>It had always been an issue for me. Whilst in school, having to stand up and talk in front of as few as 3 people, my heart would race, and I'd be extremely nervous beforehand. But I think there was one school experience that changed this to a more profound fear: a speech I have when I was 17 in front of 300 people, at a school event. My mouth was bone dry, and I practically shook when myself and a friend took to the podium for our 30 seconds of fame. I just about managed to get the words out, be they through sheer brute force, devoid of any of the humour the script called for. A remark from a friend that 'I sounded like a robot', cut deep.</p>
+<p>During my undegraduate in Psychology in Sheffield, we had to give occasional talks. I vividly recall having to give a talk for my dissertation in front of 10 peers. I'd just emerged from a week long bout of flu and was determined to tick this required course objective off the list, despite having given the talk barely any practice at all. Again, my mouth went bone dry and I rambled on, finishing my talk in a fraction of the time of everyone else. </p>
+<h2><span style="text-decoration: underline;">A false panacea</span></h2>
+<p>Whilst studying for my PhD, I was introduced to a game-changer: prescribed beta-blockers (20mg). I had to give weekly tutorials to first year psychology students on statistics. I was initially sceptical about beta-blockers but found, incredibly, that they totally changed public speaking for me. All of a sudden, I didn't have this 'fight or flight' response whilst speaking.</p>
+<p>My PhD supervisor became ill during my first year of study and her lab group took over some of her lectureship responsibilities. I was tasked doing with perhaps 5 first year Perception lectures. Armed with beta-blockers and a lot of preparation, I got through this experience. It was only during the very start of each lecture that I was nervous. I recall I had to give some messages before the start of each lecture and this routine helped settle my nerves.</p>
+<p>But I got some nasty feedback from the students at the end of all this (although this was not universal with some praising me for making the lectures fun and interesting). This spurred the head of department to proclaim that students would never thereafter conduct lectures in his department. This hit my hard, leaving me question my abilities and skills and wondering what on earth I was doing in academia.</p>
+<p>But, I was 22. The first years were 19. And I was thrown into lectureship totally unprepared and <strong>UNQUALIFIED</strong>. I have come to realise with time that it was unfair for me to be placed in that situation. There was a whole department of far more suitable, properly qualified and experienced people who should have conducted those lectures.</p>
+<p>The problem with beta blockers is that once you know about them, you start to rely on them. I'd start taking them before important meetings, and then before not so important meetings. This process I think acted to perpetuate and escalate my fears, making me think I affected far more so by my fear than was actually the case.</p>
+<p>I'd postdoc'd in Bangor, and then moved onto being a research scientist in the food industry, in the Netherlands. It was during my time in the Netherlands that I was introduced to <a href="https://www.toastmasters.org/">ToastMasters</a>, a worldwide public speaking society.</p>
+<p>The goal of ToastMasters is to make people more comfortable and confident with public speaking, through controlled exposure. Every month, there's a meeting, the guts of which are 3-6 short speeches (3-10 minutes each) various people give. But there are a plethora of other opportunities for speaking during such a meeting, ranging from being the chair for the evening, being responsible for timing the speeches (you need to stand up and explain your role!), giving feedback on each talk,  to even being a grammarian, who reports at the end of the evening on any curious uses of grammea.</p>
+<h2>Breaking out</h2>
+<p>The goal when joining ToastMasters is to undertake 10 short speeches, after which you are awarded your Competent Communicator award. It took me about 18 months to get mine. Each speech focuses on a different element key to public speaking. For example, focusing on vocal range or usage of the stage.</p>
+<p>I recall total the total dread I experienced standing up to give my first talk without beta-blockers! My hands were shaking, my voice was 'pinched' (my voice seems to go a bit higher pitch in stressful situations, ironically making me harder to hear, making people ask me to repeat myself, making me more stressed...). I'd practiced the 3-minute talk a lot and had notes in front of me so there was no real problem in forgetting my lines. The issue though was a cycling 10-second fight-or-flight response where I'd repeatedly realise my situation and the people around me, and really have to force myself to continue talking. This manifested as actual auditory 'pops' in my hearing, which could have been due to ear canal muscles contracting due to stress. Perhaps they were just imagined, though. I finally finished my speech. Nothing bad had happened, and I got wonderful encouraging structured feedback from the person assessing my speech.</p>
+<p>Over the course of the first 3 or 4 speeches things got easier and I realised that I <em>could</em> give talks. I still was very nervous, totally hating the time I spent up on stage, but more so totally dreading the waiting time before my speech.</p>
+<p>However, something strange seemed to happen towards the end of my 10 speeches. I started interpreting my nerves not as fear but as a 'buzz' that, incredibly for me, I begin to <strong>ENJOY.</strong> I begin to not see the audience as hostile but instead found it increasing rewarding trying to engage them, and interact with them through eye contact.</p>
+<p>I was encouraged to enter a public speaking competition soon after, and did so on the topic of eating crazily hot chillies. To my utter joy and bewilderment my speech came second in the Netherlands. Shortly after, some of my research (I am a psychologist) caught the eye of the media (e.g. <a href="https://www.bbc.co.uk/news/science-environment-11525897">BBC</a>) and I was asked to give a whole stack of radio interviews, culminating with a slot of BBC radio 2 with several million listeners. I must say that there was a 3 second pause between being introduced on that show and starting speaking (during which, a whole pile of bricks were involved in something unmentionable), but I got over it, and the interview went well.</p>
+<h2>Present Day</h2>
+<p>I enjoy public speaking! How is this possible? I'm invited to departments and events to give talks mainly on my current research obsession -- how to conduct research online. I volunteer to give talks at hackathons (e.g. on multisensory sex, <a href="https://www.gold.ac.uk/calendar/?id=11171">https://www.gold.ac.uk/calendar/?id=11171</a>) and indeed have started to really enjoy science outreach, currently by attending my local Cafe Scientific (I am to give a talk shortly about an app I am writing about running shoes). We are also setting up the Surrey Branch of the British Science Association which the area really needs.</p>
+<h2>My advice</h2>
+<p>Exposure, I think is the one true way of overcoming public speaking fears. Whilst there are other solutions (for me, beta blockers), it is easy to become over-reliant on them. Indeed, I strongly suspect that they even acted to bolster my public speaking fears.</p>
+<p>I'm not convinced that, for example, imagining the audience naked, really helps. There is a lot of advice out there, and people willing to <strong>sell<em> </em></strong>this advice. I must say, I would be keen indeed to learn how much of this advice would pass peer review (that is, I suspect if explored there would be no scientific evidence for their effectiveness).</p>
+<p>Consider joining a public speaking group! Practicing in a safe environment (a where a mediocre talk wont impact on your career), with perhaps 60% of people being there for the same reason as you, is a game changer. It turned a point of weakness for me into a new passion.</p>
+<p>Furmark, T., Tillfors, M., Everz, P. O., Marteinsdottir, I., Gefvert, O., &amp; Fredrikson, M. (1999). Social phobia in the general population: prevalence and sociodemographic profile. <em>Social psychiatry and psychiatric epidemiology</em>, <em>34</em>(8), 416-424.</p>
+            ]]>
+        </content>
+    </entry>
+    <entry>
+        <title>my terrifying departure from academia to coding, and it&#x27;s now crunch time</title>
+        <author>
+            <name>andy-woods</name>
+        </author>
+        <link href="https://andytwoods.com/my-terrifying-departure-from-academia-to-coder-and-its-now-crunch-time.html"/>
+        <id>https://andytwoods.com/my-terrifying-departure-from-academia-to-coder-and-its-now-crunch-time.html</id>
+            <category term="transition"/>
+            <category term="personal"/>
+            <category term="academia"/>
+
+        <updated>2020-09-01T20:14:41+01:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://andytwoods.com/media/posts/3/coverImage.PNG" alt="" />
+                    I’ve just spent 4-months writing www.spyrelabs.org. Full-time. Whilst doing absolutely no academic work whatsoever, and contributing nothing to the family income. Further, it's make or break time for spyrelabs.org as we’re releasing in a week. Here’s my story, interposed by the various apps i’ve written&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://andytwoods.com/media/posts/3/coverImage.PNG" alt="" />
+                <p><span style="font-weight: 400;">I’ve just spent 4-months writing </span><a href="http://www.spyrelabs.org"><span style="font-weight: 400;">www.spyrelabs.org</span></a><span style="font-weight: 400;">. Full-time. Whilst doing absolutely no academic work whatsoever, and contributing nothing to the family income. Further, it's make or break time for spyrelabs.org as we’re releasing in a week. Here’s my story, interposed by the various apps i’ve written in each time frame.</span></p>
+<h2><span style="font-weight: 400;">2004-2010</span></h2>
+<p><span style="font-weight: 400;">Over the last ten ten years I've been making a gradual transition from ‘traditional researcher’ (<a href="https://scholar.google.co.uk/citations?user=p5dUkQIAAAAJ&amp;hl=en">google scholar</a>) to coder-entrepreneur (<a href="https://github.com/andytwoods">github</a>). Here’s a whistle-stop tour of ‘me’ to date. My PhD was in perceptual psychology from Trinity college Dublin, and I postdoc’d in Bangor and Manchester whilst also having a stay in industry in the Netherlands in a ‘consumer perception and behaviour’ group (Unilever R&amp;D). I met my wife Johanna there and we married in 2010. Johanna took a job offer in Lausanne (Switzerland) in Nestle a year later so I followed her over after an unpleasant 9-months apart (Johanna being the far far better business person out of the two of us). And after an unsuccessful job hunt at the local universities, so began my entrepreneur career. But not though without keeping a residual trailing foot in academia.</span></p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/3/logo.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/3/responsive/logo-xs.png 300w ,https://andytwoods.com/media/posts/3/responsive/logo-sm.png 480w ,https://andytwoods.com/media/posts/3/responsive/logo-md.png 768w"  alt="" width="476" height="136"></p>
+<p><span style="font-weight: 400;">I had been coding ‘<a href="https://www.xpt.cloud" target="_blank" rel="noopener noreferrer">Xperiment</a>’ in my own time for a couple of years. The software let's you run psychology based research on the web (how? here's a <a href="https://peerj.com/articles/1058/">paper</a>), and it seemed logical to try and turn it into (Swiss-based) company #1. Three years later, I'd established some good relationships with labs in Bristol (honorary contract) and Oxford, and also spent a lot of time running academic studies with all sorts of other lab-groups. These first years were all about making the software versatile, and improving my self-taught coding skills, so only occasionally did I make money. And to keep open a door back into academia I also spent far too much time on writing and collaborating on a whole range of topics. With little money in my pocket, when we moved to Woking on the outskirts of London at the end of these 3-years (following Johanna’s next career step), it didn't make sense to re-open the company in the UK.</span></p>
+<p><code><span style="font-weight: 400;"><span style="text-decoration: underline;">Web app #1</span>: My first app was the platform researchers went to manage our studies we collaborated on (and to run studies through via my xperiment software). It's been through various incarnations, and is in active use by several groups at the moment at </span><a href="http://www.xpt.cloud"><span style="font-weight: 400;">www.xpt.cloud</span></a><span style="font-weight: 400;">. I recently opensourced the </span><a href="https://github.com/andytwoods/CloudXperiment"><span style="font-weight: 400;">cloud-based version of this software</span></a><span style="font-weight: 400;">.</span></code></p>
+<h2><span style="font-weight: 400;">2015</span></h2>
+<p><span style="font-weight: 400;">Some pals in Oxford psychology and I opened company #2, Flying Fish Research, in 2015. We did rapid online research for businesses. I again got sucked into writing academic articles, on the assumption, again, that this would keep open the academic door. We had some really nice clients, and conducted some massive multicultural studies, which were both wonderful and terrifying (giving that there was no room for error when you have a 40,000 person study). We closed this company in February 2018 as it wasn't really making enough money to be self sustaining.</span></p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/3/business_cards2_FRONT.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/3/responsive/business_cards2_FRONT-xs.png 300w ,https://andytwoods.com/media/posts/3/responsive/business_cards2_FRONT-sm.png 480w ,https://andytwoods.com/media/posts/3/responsive/business_cards2_FRONT-md.png 768w"  alt="" width="400" height="674"></p>
+<p><code><span style="font-weight: 400;"><span style="text-decoration: underline;">Web app #2</span>: As part of Flying Fish Research, I wrote an app called ‘SmartCrowd’ (</span><a href="https://web.archive.org/web/20180226132313/https://www.smartcrowd.io/"><span style="font-weight: 400;">resurrected</span></a><span style="font-weight: 400;"> via </span><a href="https://web.archive.org/web/20180226132313/https://www.smartcrowd.io/"><span style="font-weight: 400;">https://web.archive.org</span></a><span style="font-weight: 400;">) that let anyone ask the masses their opinion on a given topic, be it which from a series of logos they should use for their company, or which online dating photo would make them seem most, for example, attractive. The app plugged into </span><a href="https://www.mturk.com/"><span style="font-weight: 400;">Mechanical Turk</span></a><span style="font-weight: 400;"> and could get the opinion of 100 people, in typically 10 minutes. Sadly we didn’t prove popular and I was rather devastated when we decided to close it down for this reason.</span></code></p>
+<h2><span style="font-weight: 400;">2018, Feb: realisation that academia was not for me</span></h2>
+<p><span style="font-weight: 400;">And this is when I released that not devoting myself fully to being an entrepreneur, that is, keeping a foot in academia by collaborating in research, might actually have been hampering my chance of my businesses becoming successful. Please do not get me wrong, I love the research process, especially the moment when you start exploring a new data set. But I could not see myself lecturing, or applying for grants, and the way that the Conservative government treats academia appalled me (demanding longer working hours for less pay and pension). It hit me hard, this realisation, and forced me to reevaluate everything. Specifically that:</span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">I absolute love to code. It can be so hard, but yet so rewarding. That endorphin buzz after cracking a troublesome bug beats any triple-espresso hands-down.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Entrepreneurship is where I belong.</span></li>
+</ul>
+<h2><span style="font-weight: 400;">2018, Feb, Spyrelabs</span></h2>
+<p><span style="font-weight: 400;">I’ve blogged about the story of my getting started with Spyre </span><a href="https://www.spyrelabs.org/blog/the-story-behind-andy-getting-involved-in-spyre/"><span style="font-weight: 400;">before</span></a><span style="font-weight: 400;">. But super quickly, on one large study we ran at Flying Fish Research, another company let us down regarding translations into 8 Asian languages. Incredibly last moment, whilst on holiday at the in-laws, with our five-year old and six-month old children buzzing around, this had to somehow be sorted. I posted on </span><a href="https://www.facebook.com/groups/psychmap/"><span style="font-weight: 400;">PsychMap (Psychology group on facebook)</span></a><span style="font-weight: 400;"> asking for help in exchange for $. Very quickly, in hours, 8 very clever psychologists offered to translate the psychology heavy texts, and did so within a few days. And it was awesome.</span></p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/3/spyre.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/3/responsive/spyre-xs.PNG 300w ,https://andytwoods.com/media/posts/3/responsive/spyre-sm.PNG 480w ,https://andytwoods.com/media/posts/3/responsive/spyre-md.PNG 768w"  alt="" width="451" height="145"></p>
+<p><span style="font-weight: 400;">It occured to me that academics have a whole host of skills that they may be willing to offer others, and make some money in the process. I asked around and heard about Heather and her Spyre project. We got chatting, and never looked back. We agreed I'd make <a href="http://www.spyrelabs.org">www.spyrelabs.org </a>from scratch using entirely open source software.</span></p>
+<p><code><span style="text-decoration: underline;">Web app #3</span>: Spyrelabs let's academics freelance as a consultant for hour / week / month or longer duration projects. It links up academics wanting to freelance, to those who want to hire them, be they startups, big business, or other academics. Those posting jobs specify the skills they need. Academics specify what their expertise is and what sort of jobs they want to know about. Our matching algorithm links together those well-matched.</code></p>
+<p><code><img loading="lazy" src="https://andytwoods.com/media/posts/3/rewards.PNG" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/3/responsive/rewards-xs.PNG 300w ,https://andytwoods.com/media/posts/3/responsive/rewards-sm.PNG 480w ,https://andytwoods.com/media/posts/3/responsive/rewards-md.PNG 768w"  alt="" width="400" height="389"></code></p>
+<p><code>Being a psychologist, I couldn't resist adding a <a href="https://www.spyrelabs.org/rewards/">novel rewards system</a> to help us grow. Specifically, both consultants and hirers can give others a referral code when they sign-up, and earn a commision of the first 3 completed jobs (if their signup'ee is a consultant) or job postings (or is a hirer). Novely, if those who signed-up go on to invite others to sign-up with their own referral codes, the initial inviter (you) again get's a commision on job completion, for upto 3 generations. Commisions completely come out of any profit Spyre makes.</code></p>
+<h2><span style="font-weight: 400;">Crunch time</span></h2>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/3/6890239667_5705221056_z-1.jpg" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/3/responsive/6890239667_5705221056_z-1-xs.jpg 300w ,https://andytwoods.com/media/posts/3/responsive/6890239667_5705221056_z-1-sm.jpg 480w ,https://andytwoods.com/media/posts/3/responsive/6890239667_5705221056_z-1-md.jpg 768w"  alt="" width="300" height="640"></p>
+<p>So the app is undergoing beta testing. And then we go live... and find out if academia likes the idea.</p>
+<p>I really hope you do! I really believe that Spyre can do some good. It can help people such as myself transition out of academia. It can help the struggling postdoc on that rubbish stipend make ends meet, and fill the gap between the terrible short term contracts that seem endemic these days in academia.</p>
+<p>I'd be grateful if you could check out the site, let us know what you think, and if you want to, sign-up and spread the word :)  Thankyou so much.</p>
+<br>
+<p> </p>
+            ]]>
+        </content>
+    </entry>
+    <entry>
+        <title>Python Zappa + django-cookiecutter (via PyCharm)</title>
+        <author>
+            <name>andy-woods</name>
+        </author>
+        <link href="https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html"/>
+        <id>https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html</id>
+
+        <updated>2020-09-01T20:14:41+01:00</updated>
+            <summary>
+                <![CDATA[
+                    A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years. Install cookiecutter pip install "cookiecutter&gt;=1.4.0" Lets create our project with cookiecutter-django (it will create a directory within&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                <p>A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years.</p>
+<h2>Cookie-cutter, PyCharm</h2>
+<p>Install cookiecutter</p>
+<p><code>pip install "cookiecutter&gt;=1.4.0"</code></p>
+<p>Lets create our project with cookiecutter-django (it will create a directory within the directory you are currently in of the same name as ‘project slug’). N.b. Sentry is autoselected to be installed, which <a href="https://www.reddit.com/r/django/comments/8fiz89/how_are_you_regularly_deploying_new_django/dy5i6zb/">can be very useful</a> for debugging in Zappa (n.b one pitfall is that Sentry needs to access services outside of AWS, and the process of granting Zappa external internet access can be troublesome – a catch-22 scenario. For this reason, it is very helpful, be it very briefly, to have debug=True when you first get your app online via Zappa).</p>
+<p> </p>
+<code>cookiecutter https://github.com/pydanny/cookiecutter-django</code>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image001.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image001-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image001-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image001-md.png 768w"  alt="" width="1292" height="791"></p>
+<p>Lets open the project in pycharm.</p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/1/image003.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image003-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image003-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image003-md.png 768w"  alt="" width="425" height="494"></p>
+<p>Create virtual environment via File -&gt; Settings… select the cog on the far right side of the window, under ‘Reset’ .</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image004.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image004-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image004-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image004-md.png 768w"  alt="" width="757" height="646"></p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image006.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image006-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image006-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image006-md.png 768w"  alt="" width="831" height="573"></p>
+<p>We need to tell Pycharm where our requirement files are (select ‘…’ button top right).</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image008.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image008-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image008-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image008-md.png 768w"  alt="" width="878" height="647"></p>
+<p>Select production.txt.</p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/1/image010.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image010-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image010-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image010-md.png 768w"  alt="" width="425" height="491"></p>
+<p>You need to open a file in PyCharm, and magically, it asks to install packages missing from your virtual environment.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image011.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image011-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image011-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image011-md.png 768w"  alt="" width="1487" height="1127"></p>
+<p>While packages are being installed, let’s create a local run configuration so we can verify the project is working locally. Let’s clean up the existing configurations too (down arrow, ‘Edit Configurations…’). I’m removing all the Docker configs.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image013.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image013-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image013-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image013-md.png 768w"  alt="" width="733" height="610"></p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/1/image016.jpg" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image016-xs.jpg 300w ,https://andytwoods.com/media/posts/1/responsive/image016-sm.jpg 480w ,https://andytwoods.com/media/posts/1/responsive/image016-md.jpg 768w"  alt="" width="602" height="414"></p>
+<p>Note that in ‘Environment variables’ you need to add <code>DJANGO_SETTINGS_MODULE=config.settings.local</code></p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/1/server.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/server-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/server-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/server-md.png 768w"  alt="" width="1078" height="742"></p>
+<h2>Zappa</h2>
+<p>We need to set up our AWS credentials. Head over to <a href="https://pypi.org/project/awscli/">https://pypi.org/project/awscli/</a> for proper instructions. You can just follow the below instructions once you’ve set up your amazon account (and have created access and secret keys):</p>
+<p> </p>
+<code>pip install awscli</code><br><code>aws configure</code><br><code>AWS Access Key ID: foo</code><br><code>AWS Secret Access Key: bar</code><br><code>Default region name [us-west-2]: us-west-2</code><br><code>Default output format [None]: json</code>
+<p>Let’s now install zappa and apply it to our project.</p>
+<p><code>pip install zappa$</code><br><code>zappa init</code></p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image019.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image019-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image019-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image019-md.png 768w"  alt="" width="1160" height="1082"> </p>
+<p>In PyCharm, open zappa_settings.json (press shift key twice and start typing 😉 ).</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image021.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image021-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image021-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image021-md.png 768w"  alt="" width="452" height="271"></p>
+<p>This is very minimal! I stole the below from one my projects. Feel free to copy/paste your settings into mine below. Note that we will set up ‘vpc config’ stuff in another blog post. If you do not remove this text now (the crossed out text), zappa will fail when you try to deploy.</p>
+<code>{</code><br><code>     "dev": {</code><br><code>       "environment_variables": {</code><br><code>         "SECRET_KEY": ---",</code><br><code>         "RDS_PASSWORD": "---",</code><br><code>         "RDS_INSTANCE_ID": "---",</code><br><code>         "RDS_DB_NAME": "---",</code><br><code>         "RDS_USERNAME": "---",</code><br><code>         "RDS_HOSTNAME": "---",</code><br><code>         "DJANGO_SETTINGS_MODULE": "config.settings.production",</code><br><code>         "DJANGO_SECRET_KEY": "---",</code><br><code>         "AWS_ACCESS_KEY_ID": "---",</code><br><code>         "AWS_SECRET_ACCESS_KEY": "---",</code><br><code>         "REDIS_LOCATION": "redis://---.---.cache.amazonaws.com"</code><br><code>        },</code><br><code>       "aws_region": "eu-west-1",</code><br><code>       "django_settings": "config.settings.production",</code><br><code>       "profile_name": "spyre",</code><br><code>       "project_name": "---",</code><br><code>       "runtime": "python3.6",</code><br><code>       "s3_bucket": "---",</code><br><code>       "exclude": [</code><br><code>         "*.pyc",</code><br><code>         "*.sqlite3",</code><br><code>         "*.mp4",</code><br><code>         ".ebextensions",</code><br><code>         ".idea",</code><br><code>         "static",</code><br><code>         "my_staticfiles"</code><br><code>       ],</code><br><code>       "cors": <strong>true</strong>,</code><br><code>       "slim_handler": <strong>false</strong>,</code><br><code>       "certificate_arn": "arn:aws:acm:us-east-1:---:certificate/---",</code><br><code>       "keep_warm": <strong>true</strong>,</code><br><code> <span style="text-decoration: line-through;">      </span><span style="text-decoration: line-through;">"vpc_config"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">{<br>             </span><span style="text-decoration: line-through;">"SubnetIds"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">[<br>               </span><span style="text-decoration: line-through;">"subnet----"<br>               </span><span style="text-decoration: line-through;">]</span><span style="text-decoration: line-through;">,<br>             </span><span style="text-decoration: line-through;">"SecurityGroupIds"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">[ </span><span style="text-decoration: line-through;">"sg----" </span><span style="text-decoration: line-through;">]<br>         }</span><span style="text-decoration: line-through;">,</span></code><br><code>       "extra_permissions": [{</code><br><code>             "Effect": "Allow",</code><br><code>             "Action": ["ses:SendRawEmail", "ses:SendEmail", "ses:SendTemplatedEmail"],</code><br><code>             "Resource": "*"</code><br><code>         }]</code><br><code>     }</code><br><code> }</code>
+<p>In order to access system variables within zappa_settings.json on your local machine we need the following at the top of base.py</p>
+<p> </p>
+<code>import os ON_DEV_SERVER = False</code><br><code> if 'SERVERTYPE' not in os.environ or os.environ['SERVERTYPE'] != 'AWS Lambda':</code><br><code>     ON_DEV_SERVER = True</code><br><code>     import json</code><br><code>     import os</code><br> <br><code>     json_data = open('zappa_settings.json')</code><br><code>     env_vars = json.load(json_data)['production']['environment_variables']</code><br><code>     for key, val in env_vars.items():</code><br><code>         if key not in ['DJANGO_SETTINGS_MODULE', 'django_settings']:</code><br><code>             os.environ[key] = val</code>
+<p><code> </code></p>
+<p>In local.py let’s quickly add db info</p>
+<p><code></code><br><code>DATABASES = {</code><br><code>     'default': {</code><br><code>         'ENGINE': 'django.db.backends.postgresql_psycopg2',</code><br><code>         'NAME': 'zappademo',</code><br><code>         'USER': 'zappademo',</code><br><code>         'PASSWORD': 'zappademo',</code><br><code>         'HOST': '127.0.0.1',</code><br><code>         'PORT': '5432',</code><br><code>     }</code><br><code> }</code></p>
+<p> </p>
+<p>Let’s migrate our db</p>
+<p><code>python manage.py migrate</code></p>
+<p>and run our local server</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image022.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image022-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image022-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image022-md.png 768w"  alt="" width="560" height="225"></p>
+<p>With luck we get:</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image023.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image023-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image023-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image023-md.png 768w"  alt="" width="973" height="675"></p>
+<p>Unfortunately, Zappa wants your apps to be in the top directory, whilst Django-bootstrap has them all in zappa_demo (here). Just move them to your top directory. You’ll need to update various files within your project to reflect this directory change. An easy way of doing this is via control+shift+f to search for ‘zappa_demo’ and then just remove the defunct directory info.</p>
+<p> <img loading="lazy" src="https://andytwoods.com/media/posts/1/image025.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image025-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image025-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image025-md.png 768w"  alt="" width="320" height="562"></p>
+<p>I found I had to adjust remove the below ‘zappa_demo’ text that’s been labelled with a blue line.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image026.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image026-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image026-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image026-md.png 768w"  alt="" width="625" height="818"></p>
+<p>With luck, your app still works on your local machine.</p>
+<p>One last thing we need to do is remove the Argon2 password hash. I’ve never managed to get it to work in Lamba, and neither has PyDanny (reddit <a href="https://www.reddit.com/r/django/comments/8fiz89/how_are_you_regularly_deploying_new_django/dy5i6zb/">link</a>; the author of Django-cookiecutter, and fellow keen zappa-nought).</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image027.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image027-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image027-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image027-md.png 768w"  alt="" width="674" height="194"></p>
+<h2>Deploying Zappa</h2>
+<p>I'd advise briefly having debug=True <em>in production</em> (but at a very obscure aws provided url) whilst you get your app up and running on Zappa. Elsewise, it's next to impossible to figure out what's going on with any arising bugs. </p>
+<p>Once run, this can take a few minutes. You run this command each time you want to update your site. The first deploy takes a little longer than the others as several packages need to be downloaded.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image029.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image029-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image029-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image029-md.png 768w"  alt="" width="771" height="393"></p>
+<p>I got the below once, the site was launched and I visited the deployment url.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image031.png" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image031-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image031-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image031-md.png 768w"  alt="" width="874" height="137"></p>
+<p>Running <code>zappa tail</code>, reveals my problem, I’ve not set up the db! Setting this up and accessing the external internet from the app is the focus of the next blog.</p>
+<p><img loading="lazy" src="https://andytwoods.com/media/posts/1/image034.jpg" sizes="(max-width: 48em) 100vw, 768px" srcset="https://andytwoods.com/media/posts/1/responsive/image034-xs.jpg 300w ,https://andytwoods.com/media/posts/1/responsive/image034-sm.jpg 480w ,https://andytwoods.com/media/posts/1/responsive/image034-md.jpg 768w"  alt="" width="601" height="157"></p>
+            ]]>
+        </content>
+    </entry>
+</feed>

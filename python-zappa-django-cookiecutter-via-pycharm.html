@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Python Zappa + django-cookiecutter (via PyCharm) - andytwoods </title>
+        <meta name="description" content="A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years. Install cookiecutter pip install "cookiecutter&gt;=1.4.0" Lets create our project with cookiecutter-django (it will create a directory within&hellip;" />
+         
+        <meta name="generator" content="Publii Open-Source CMS for Static Site" />
+        <link rel="canonical" href="https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html">
+        <link rel="amphtml" href="https://andytwoods.com/amp/python-zappa-django-cookiecutter-via-pycharm.html">
+        <link rel="alternate" type="application/atom+xml" href="https://andytwoods.com/feed.xml" />
+<link rel="alternate" type="application/json" href="https://andytwoods.com/feed.json" />
+
+        <meta property="og:title" content="Python Zappa + django-cookiecutter (via PyCharm)" /><meta property="og:image" content="https://andytwoods.com/media/website/andy300x300.png"/><meta property="og:site_name" content="blog - andytwoods" /><meta property="og:description" content="A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years. Install cookiecutter pip install 'cookiecutter&gt;=1.4.0' Lets create our project with cookiecutter-django (it will create a directory within&hellip;" /><meta property="og:url" content="https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html" /><meta property="og:type" content="article" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@andytwoods" /><meta name="twitter:title" content="Python Zappa + django-cookiecutter (via PyCharm)" /><meta name="twitter:description" content="A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years. Install cookiecutter pip install 'cookiecutter&gt;=1.4.0' Lets create our project with cookiecutter-django (it will create a directory within&hellip;" /><meta name="twitter:image" content="https://andytwoods.com/media/website/andy300x300.png" />
+        <link rel="stylesheet" href="https://andytwoods.com/assets/css/style.css?v=55952819389dc15ff61d1dd050af1906">
+        <script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html"},"headline":"Python Zappa + django-cookiecutter (via PyCharm)","datePublished":"2018-05-04T12:15","dateModified":"2018-05-04T12:54","description":"A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years. Install cookiecutter pip install \"cookiecutter&gt;=1.4.0\" Lets create our project with cookiecutter-django (it will create a directory within&hellip;","author":{"@type":"Person","name":"andy-woods"},"publisher":{"@type":"Organization","name":"andy-woods"}}</script>
+        	<script async src="https://andytwoods.com/assets/js/lazysizes.min.js?v=739e7d27e1cbc58b1b2e6882674b8867"></script>
+		    <style>
+				    .top__search [type=search] {
+						background-image: url(https://andytwoods.com/assets/svg/search.svg);
+				    }
+		    </style>
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" >
+    </head>
+    <body>
+        
+    <div class="container">
+        <header class="js-top is-sticky">
+            <a class="logo" href="https://andytwoods.com/">
+                    andytwoods
+            </a>
+            <div class="top">
+                <nav class="navbar js-navbar">
+                	<button class="navbar__toggle js-navbar__toggle">Menu</button>
+                    <ul class="navbar__menu">
+                    </ul>
+                </nav>
+                    <div class="top__search">
+                        <form action="https://andytwoods.com/search.html" class="search">
+                            <input
+                                type="search"
+                                name="q"
+                                placeholder="search..."/>
+                        </form>
+                    </div>
+            </div>
+        </header>
+    <main>
+            <article class="post">
+                <div class="hero">
+                   
+                    
+                    <header class="hero__text">
+                        <h1>
+                            Python Zappa + django-cookiecutter (via PyCharm)
+                        </h1>
+                            <p class="post__meta">
+                                    <time datetime="2018-05-04T12:15">
+                                            4 May 2018
+                                    </time>
+                            </p>
+                    </header>
+                </div>
+                <div class="post__entry">
+                        <p>A brief guide on deploying an django-cookiecutter baked app to AWS Lambda via Python Zappa. Using PyCharm. Greetings to my future self using this guide in several years.</p>
+<h2>Cookie-cutter, PyCharm</h2>
+<p>Install cookiecutter</p>
+<p><code>pip install "cookiecutter&gt;=1.4.0"</code></p>
+<p>Lets create our project with cookiecutter-django (it will create a directory within the directory you are currently in of the same name as ‘project slug’). N.b. Sentry is autoselected to be installed, which <a href="https://www.reddit.com/r/django/comments/8fiz89/how_are_you_regularly_deploying_new_django/dy5i6zb/">can be very useful</a> for debugging in Zappa (n.b one pitfall is that Sentry needs to access services outside of AWS, and the process of granting Zappa external internet access can be troublesome – a catch-22 scenario. For this reason, it is very helpful, be it very briefly, to have debug=True when you first get your app online via Zappa).</p>
+<p> </p>
+<code>cookiecutter https://github.com/pydanny/cookiecutter-django</code>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image001-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image001-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image001-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image001-md.png 768w"  alt="" width="1292" height="791"></p>
+<p>Lets open the project in pycharm.</p>
+<p> <img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image003-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image003-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image003-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image003-md.png 768w"  alt="" width="425" height="494"></p>
+<p>Create virtual environment via File -&gt; Settings… select the cog on the far right side of the window, under ‘Reset’ .</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image004-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image004-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image004-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image004-md.png 768w"  alt="" width="757" height="646"></p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image006-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image006-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image006-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image006-md.png 768w"  alt="" width="831" height="573"></p>
+<p>We need to tell Pycharm where our requirement files are (select ‘…’ button top right).</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image008-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image008-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image008-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image008-md.png 768w"  alt="" width="878" height="647"></p>
+<p>Select production.txt.</p>
+<p> <img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image010-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image010-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image010-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image010-md.png 768w"  alt="" width="425" height="491"></p>
+<p>You need to open a file in PyCharm, and magically, it asks to install packages missing from your virtual environment.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image011-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image011-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image011-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image011-md.png 768w"  alt="" width="1487" height="1127"></p>
+<p>While packages are being installed, let’s create a local run configuration so we can verify the project is working locally. Let’s clean up the existing configurations too (down arrow, ‘Edit Configurations…’). I’m removing all the Docker configs.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image013-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image013-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image013-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image013-md.png 768w"  alt="" width="733" height="610"></p>
+<p> <img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image016-xs.jpg" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image016-xs.jpg 300w ,https://andytwoods.com/media/posts/1/responsive/image016-sm.jpg 480w ,https://andytwoods.com/media/posts/1/responsive/image016-md.jpg 768w"  alt="" width="602" height="414"></p>
+<p>Note that in ‘Environment variables’ you need to add <code>DJANGO_SETTINGS_MODULE=config.settings.local</code></p>
+<p> <img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/server-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/server-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/server-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/server-md.png 768w"  alt="" width="1078" height="742"></p>
+<h2>Zappa</h2>
+<p>We need to set up our AWS credentials. Head over to <a href="https://pypi.org/project/awscli/">https://pypi.org/project/awscli/</a> for proper instructions. You can just follow the below instructions once you’ve set up your amazon account (and have created access and secret keys):</p>
+<p> </p>
+<code>pip install awscli</code><br><code>aws configure</code><br><code>AWS Access Key ID: foo</code><br><code>AWS Secret Access Key: bar</code><br><code>Default region name [us-west-2]: us-west-2</code><br><code>Default output format [None]: json</code>
+<p>Let’s now install zappa and apply it to our project.</p>
+<p><code>pip install zappa$</code><br><code>zappa init</code></p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image019-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image019-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image019-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image019-md.png 768w"  alt="" width="1160" height="1082"> </p>
+<p>In PyCharm, open zappa_settings.json (press shift key twice and start typing 😉 ).</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image021-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image021-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image021-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image021-md.png 768w"  alt="" width="452" height="271"></p>
+<p>This is very minimal! I stole the below from one my projects. Feel free to copy/paste your settings into mine below. Note that we will set up ‘vpc config’ stuff in another blog post. If you do not remove this text now (the crossed out text), zappa will fail when you try to deploy.</p>
+<code>{</code><br><code>     "dev": {</code><br><code>       "environment_variables": {</code><br><code>         "SECRET_KEY": ---",</code><br><code>         "RDS_PASSWORD": "---",</code><br><code>         "RDS_INSTANCE_ID": "---",</code><br><code>         "RDS_DB_NAME": "---",</code><br><code>         "RDS_USERNAME": "---",</code><br><code>         "RDS_HOSTNAME": "---",</code><br><code>         "DJANGO_SETTINGS_MODULE": "config.settings.production",</code><br><code>         "DJANGO_SECRET_KEY": "---",</code><br><code>         "AWS_ACCESS_KEY_ID": "---",</code><br><code>         "AWS_SECRET_ACCESS_KEY": "---",</code><br><code>         "REDIS_LOCATION": "redis://---.---.cache.amazonaws.com"</code><br><code>        },</code><br><code>       "aws_region": "eu-west-1",</code><br><code>       "django_settings": "config.settings.production",</code><br><code>       "profile_name": "spyre",</code><br><code>       "project_name": "---",</code><br><code>       "runtime": "python3.6",</code><br><code>       "s3_bucket": "---",</code><br><code>       "exclude": [</code><br><code>         "*.pyc",</code><br><code>         "*.sqlite3",</code><br><code>         "*.mp4",</code><br><code>         ".ebextensions",</code><br><code>         ".idea",</code><br><code>         "static",</code><br><code>         "my_staticfiles"</code><br><code>       ],</code><br><code>       "cors": <strong>true</strong>,</code><br><code>       "slim_handler": <strong>false</strong>,</code><br><code>       "certificate_arn": "arn:aws:acm:us-east-1:---:certificate/---",</code><br><code>       "keep_warm": <strong>true</strong>,</code><br><code> <span style="text-decoration: line-through;">      </span><span style="text-decoration: line-through;">"vpc_config"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">{<br>             </span><span style="text-decoration: line-through;">"SubnetIds"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">[<br>               </span><span style="text-decoration: line-through;">"subnet----"<br>               </span><span style="text-decoration: line-through;">]</span><span style="text-decoration: line-through;">,<br>             </span><span style="text-decoration: line-through;">"SecurityGroupIds"</span><span style="text-decoration: line-through;">: </span><span style="text-decoration: line-through;">[ </span><span style="text-decoration: line-through;">"sg----" </span><span style="text-decoration: line-through;">]<br>         }</span><span style="text-decoration: line-through;">,</span></code><br><code>       "extra_permissions": [{</code><br><code>             "Effect": "Allow",</code><br><code>             "Action": ["ses:SendRawEmail", "ses:SendEmail", "ses:SendTemplatedEmail"],</code><br><code>             "Resource": "*"</code><br><code>         }]</code><br><code>     }</code><br><code> }</code>
+<p>In order to access system variables within zappa_settings.json on your local machine we need the following at the top of base.py</p>
+<p> </p>
+<code>import os ON_DEV_SERVER = False</code><br><code> if 'SERVERTYPE' not in os.environ or os.environ['SERVERTYPE'] != 'AWS Lambda':</code><br><code>     ON_DEV_SERVER = True</code><br><code>     import json</code><br><code>     import os</code><br> <br><code>     json_data = open('zappa_settings.json')</code><br><code>     env_vars = json.load(json_data)['production']['environment_variables']</code><br><code>     for key, val in env_vars.items():</code><br><code>         if key not in ['DJANGO_SETTINGS_MODULE', 'django_settings']:</code><br><code>             os.environ[key] = val</code>
+<p><code> </code></p>
+<p>In local.py let’s quickly add db info</p>
+<p><code></code><br><code>DATABASES = {</code><br><code>     'default': {</code><br><code>         'ENGINE': 'django.db.backends.postgresql_psycopg2',</code><br><code>         'NAME': 'zappademo',</code><br><code>         'USER': 'zappademo',</code><br><code>         'PASSWORD': 'zappademo',</code><br><code>         'HOST': '127.0.0.1',</code><br><code>         'PORT': '5432',</code><br><code>     }</code><br><code> }</code></p>
+<p> </p>
+<p>Let’s migrate our db</p>
+<p><code>python manage.py migrate</code></p>
+<p>and run our local server</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image022-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image022-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image022-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image022-md.png 768w"  alt="" width="560" height="225"></p>
+<p>With luck we get:</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image023-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image023-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image023-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image023-md.png 768w"  alt="" width="973" height="675"></p>
+<p>Unfortunately, Zappa wants your apps to be in the top directory, whilst Django-bootstrap has them all in zappa_demo (here). Just move them to your top directory. You’ll need to update various files within your project to reflect this directory change. An easy way of doing this is via control+shift+f to search for ‘zappa_demo’ and then just remove the defunct directory info.</p>
+<p> <img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image025-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image025-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image025-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image025-md.png 768w"  alt="" width="320" height="562"></p>
+<p>I found I had to adjust remove the below ‘zappa_demo’ text that’s been labelled with a blue line.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image026-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image026-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image026-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image026-md.png 768w"  alt="" width="625" height="818"></p>
+<p>With luck, your app still works on your local machine.</p>
+<p>One last thing we need to do is remove the Argon2 password hash. I’ve never managed to get it to work in Lamba, and neither has PyDanny (reddit <a href="https://www.reddit.com/r/django/comments/8fiz89/how_are_you_regularly_deploying_new_django/dy5i6zb/">link</a>; the author of Django-cookiecutter, and fellow keen zappa-nought).</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image027-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image027-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image027-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image027-md.png 768w"  alt="" width="674" height="194"></p>
+<h2>Deploying Zappa</h2>
+<p>I'd advise briefly having debug=True <em>in production</em> (but at a very obscure aws provided url) whilst you get your app up and running on Zappa. Elsewise, it's next to impossible to figure out what's going on with any arising bugs. </p>
+<p>Once run, this can take a few minutes. You run this command each time you want to update your site. The first deploy takes a little longer than the others as several packages need to be downloaded.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image029-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image029-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image029-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image029-md.png 768w"  alt="" width="771" height="393"></p>
+<p>I got the below once, the site was launched and I visited the deployment url.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image031-xs.png" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image031-xs.png 300w ,https://andytwoods.com/media/posts/1/responsive/image031-sm.png 480w ,https://andytwoods.com/media/posts/1/responsive/image031-md.png 768w"  alt="" width="874" height="137"></p>
+<p>Running <code>zappa tail</code>, reveals my problem, I’ve not set up the db! Setting this up and accessing the external internet from the app is the focus of the next blog.</p>
+<p><img class="lazyload blur-up" loading="lazy" src="https://andytwoods.com/media/posts/1/responsive/image034-xs.jpg" data-sizes="auto" data-srcset="https://andytwoods.com/media/posts/1/responsive/image034-xs.jpg 300w ,https://andytwoods.com/media/posts/1/responsive/image034-sm.jpg 480w ,https://andytwoods.com/media/posts/1/responsive/image034-md.jpg 768w"  alt="" width="601" height="157"></p>
+                            <p class="post__last-updated">
+                                This article was updated on
+
+                                    4 May 2018
+                            </p>
+
+                </div>
+                    <aside class="post__share">
+                         <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fandytwoods.com%2Fpython-zappa-django-cookiecutter-via-pycharm.html" class="js-share facebook" title="Share with Facebook" rel="nofollow">
+                        	<svg class="icon">
+                        		<use xlink:href="https://andytwoods.com/assets/svg/svg-map.svg#facebook" />
+                        	</svg>
+                        </a>
+                        
+                        <a href="https://twitter.com/share?url=https%3A%2F%2Fandytwoods.com%2Fpython-zappa-django-cookiecutter-via-pycharm.html&amp;via=@andytwoods&amp;text=Python%20Zappa%20%2B%20django-cookiecutter%20(via%20PyCharm)
+                        " class="js-share twitter" title="Share with Twitter" rel="nofollow">
+                        	<svg class="icon">
+                        		<use xlink:href="https://andytwoods.com/assets/svg/svg-map.svg#twitter" />
+                        	</svg>
+                        </a>
+                        
+                        
+                        
+                        
+                        <a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Fandytwoods.com%2Fpython-zappa-django-cookiecutter-via-pycharm.html&amp;title=Python%20Zappa%20%2B%20django-cookiecutter%20(via%20PyCharm)" class="js-share linkedin" title="Share with LinkedIn" rel="nofollow">
+                        	<svg class="icon">
+                        		<use xlink:href="https://andytwoods.com/assets/svg/svg-map.svg#linkedin" />
+                        	</svg>
+                        </a>
+                        
+                    </aside>
+                    <footer class="post__footer">
+
+
+                                <nav class="post__nav">
+                                        <div class="post__nav__next">
+                                            Next Post
+                                            <h5>
+                                                <a href="https://andytwoods.com/my-terrifying-departure-from-academia-to-coder-and-its-now-crunch-time.html" class="inverse" rel="next">
+                                                    my terrifying departure from academia to coding, and it&#x27;s now crunch time
+                                                </a>
+                                            </h5>
+                                        </div>
+                                </nav>
+
+                                <div class="post__related">
+                                    <h3>
+                                        Related posts
+                                    </h3>
+                                    <div class="post__related__wrap">
+                                            <figure>
+                                                            <a href="https://andytwoods.com/python-zappa-external-web-setting-up-vpc.html">
+                                                                <img
+                                                                    class="lazyload blur-up"
+                                                                    src="https://andytwoods.com/media/posts/2/responsive/1_6j17ZDuywkKu7TOa2yvAKg-xs.png"
+                                                                    srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                                                                    data-srcset="https://andytwoods.com/media/posts/2/responsive/1_6j17ZDuywkKu7TOa2yvAKg-xs.png"
+                                                                    data-expand="300"
+                                                                    alt="">
+                                                            </a>
+                                                <figcaption>
+                                                    <h4>
+                                                        <a href="https://andytwoods.com/python-zappa-external-web-setting-up-vpc.html" class="inverse"> Python Zappa + db + external web (setting up VPC)</a>
+                                                    </h4>
+                                                    <time datetime="2019-04-16T16:51">
+                                                            16 April 2019
+                                                    </time>
+                                                </figcaption>
+                                            </figure>
+                                    </div>
+                                </div>
+                    </footer>
+            </article>
+            <h3>
+                Comments
+            </h3>
+            <div id="disqus_thread"></div>
+            <script>
+                var disqus_config = function () {
+                    this.page.url = 'https://andytwoods.com/python-zappa-django-cookiecutter-via-pycharm.html';
+            		this.page.identifier = '1';
+                    this.page.title = ' Python Zappa + django-cookiecutter (via PyCharm) - andytwoods ';
+                };
+            
+                var disqus_loaded = false;
+            
+                function publiiLoadDisqus() {
+                    if(disqus_loaded) {
+                        return false;
+                    }
+            
+                    var top = document.getElementById('disqus_thread').offsetTop;
+            
+                    if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                        disqus_loaded = true;
+            
+                        (function () {
+                            var d = document, s = d.createElement('script');
+                            s.src = '//andytwoods-com.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    }
+                }
+            
+                publiiLoadDisqus();
+            
+                window.onscroll = function() {
+                    publiiLoadDisqus();
+                };
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </main>
+    <footer class="footer">
+            <div class="footer__social">
+            </div>
+            <div class="footer__copyright">
+                @andytwoods
+            </div>
+    </footer>
+    </div>
+    
+    <script>
+    	var loadCSSFiles = function() {
+    		var links = ['https://fonts.googleapis.com/css?family=Roboto:400,700|Roboto+Condensed:400,700&amp;subset=latin-ext'],
+    			headElement = document.getElementsByTagName('head')[0],
+    			linkElement, i;
+    		for (i = 0; i < links.length; i++) {
+    			linkElement = document.createElement('link');
+    			linkElement.rel = 'stylesheet';
+    			linkElement.href = links[i];
+    			headElement.appendChild(linkElement);
+    		}
+    	};
+    	var raf = requestAnimationFrame || mozRequestAnimationFrame || webkitRequestAnimationFrame || msRequestAnimationFrame;
+    	if (raf) {
+    		raf(loadCSSFiles);
+    	} else {
+    		window.addEventListener('load', loadCSSFiles);
+    	}
+    
+    </script>
+    <script defer src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" aria-dropeffect="" crossorigin="anonymous"></script>
+    <script defer src="https://andytwoods.com/assets/js/scripts.min.js?v=f37607af05f83050cdcc37ea18bb5ee1"></script>
+    
+    </body>
+    </html>
